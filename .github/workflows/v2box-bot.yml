@@ -1,0 +1,26 @@
+name: V2Box links bot
+
+on:
+  schedule:
+    - cron: "0 */12 * * *" # every 12 hours (UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  post-links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r v2box_bot/requirements.txt
+      - run: python v2box_bot/bot.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
